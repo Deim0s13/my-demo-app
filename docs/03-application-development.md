@@ -192,15 +192,21 @@ src/
 
 ### 5.2 HTML Templates
 
-The HTML templates handle pages for the homepage, user registration, login, and profile.
+The HTML templates handle the structure and layout of the pages users interact with. Below is a brief description of each file and its purpose:
+
+- **index.html**: The homepage of the application, welcoming users and providing links to register or log in. It serves as the starting point for navigating the application.
+- **register.html**: The registration page, where new users can sign up by providing a username and email. This form sends data to the backend to create a new user account.
+- **login.html**: The login page, where users can enter their username to log in. Upon successful login, users are redirected to their profile page.
+- **profile.html**: The profile page displays the user’s information, such as their username and email. It allows users to view their details and provides a link to edit their profile in the future.
 
 ### 5.3 Static Files
 
-CSS and JavaScript files are stored in the static/ directory.
+- **styles.css**: This CSS file contains the styles used throughout the application, ensuring a consistent look and feel across all pages.
+- **scripts.js**: This JavaScript file is currently a placeholder for future client-side functionality that might be added to enhance user interactions.
 
 ### 5.4 Flask Integration
 
-Flask was configured to serve the frontend from the src/frontend/ directory using the template_folder and static_folder parameters.
+Flask was configured to serve the frontend from the src/frontend/ directory using the template_folder and static_folder parameters. This allows the Flask backend to render these HTML templates and serve the static files appropriately.
 
 ## 6. Running the Application
 
