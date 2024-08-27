@@ -5,11 +5,11 @@ My Demo App is a web application designed to demonstrate the full lifecycle of d
 
 ## 1.3 Features
 
-	•	User Management: The application includes basic user management features, such as user registration, login, and profile management. Users can sign up with a username and email, log in, and view or update their profile information.
-	•	PostgreSQL Integration: The backend is powered by a PostgreSQL database, providing robust data storage and retrieval capabilities. The application demonstrates how to set up and interact with a relational database using SQLAlchemy and Flask-Migrate for database migrations.
-	•	Frontend-Backend Integration: The application includes a simple, yet functional, frontend built with HTML, CSS, and JavaScript. The frontend interacts with the backend through RESTful API endpoints, demonstrating the flow of data between the user interface and the server.
-	•	Modular Architecture: The project is structured to separate concerns effectively. The backend, frontend, and database layers are clearly defined, making the application easy to manage, extend, and deploy.
-	•	Deployment Readiness: The project is designed with deployment in mind, with clear instructions on how to set up the environment, manage dependencies, and run the application both locally and in production.
+- **User Management**: The application includes basic user management features, such as user registration, login, and profile management. Users can sign up with a username and email, log in, and view or update their profile information.
+- **PostgreSQL Integration**: The backend is powered by a PostgreSQL database, providing robust data storage and retrieval capabilities. The application demonstrates how to set up and interact with a relational database using SQLAlchemy and Flask-Migrate for database migrations.
+- **Frontend-Backend Integration**: The application includes a simple, yet functional, frontend built with HTML, CSS, and JavaScript. The frontend interacts with the backend through RESTful API endpoints, demonstrating the flow of data between the user interface and the server.
+- **Modular Architecture**: The project is structured to separate concerns effectively. The backend, frontend, and database layers are clearly defined, making the application easy to manage, extend, and deploy.
+- **Deployment Readiness**: The project is designed with deployment in mind, with clear instructions on how to set up the environment, manage dependencies, and run the application both locally and in production.
 
 ## 1.4 Purpose
 
