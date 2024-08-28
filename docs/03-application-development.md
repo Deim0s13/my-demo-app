@@ -1,6 +1,6 @@
 # 3. Application Development
 
-This document describes the steps taken to develop the My Demo App project.
+This document describes the steps I took to develop the My Demo App project.
 
 ## 3.1 Project Structure
 
@@ -13,10 +13,13 @@ my-demo-app/
 │   ├── backend/
 │   │   ├── app.py
 │   │   ├── config.py
-│   │   ├── extensions.py        # New file for managing extensions like SQLAlchemy
+│   │   ├── extensions.pyWas
 │   │   ├── models.py
 │   │   ├── requirements.txt
-│   │   └── migrations/
+│   │   ├── migrations/
+│   │   ├── __tests__/
+│   │   │   ├── test_routes.py
+│   │   │   ├── test_models.py
 │   ├── frontend/
 │   │   ├── templates/
 │   │   │   ├── index.html
@@ -28,13 +31,19 @@ my-demo-app/
 │   │   │   │   └── styles.css
 │   │   │   ├── js/
 │   │   │   │   └── scripts.js
+│   │   ├── cypress/
+│   │   │   ├── e2e/
+│   │   │   │   ├── login_spec.cy.js
+│   │   │   │   ├── register_spec.cy.js
+│   │   │   ├── fixtures/
+│   │   │   ├── support/
 ```
 
 ## 3.2 Environment Setup
 
 ### 3.2.1 Virtual Environment
 
-The project uses a Python virtual environment to manage dependencies. The virtual environment should be set up in the `src/backend/` directory.
+I used a Python virtual environment to manage dependencies. The virtual environment is set up in the `src/backend/` directory
 
 1. **Navigate to the Backend Directory**:
    First, navigate to the `src/backend/` directory:
@@ -61,7 +70,7 @@ The project uses a Python virtual environment to manage dependencies. The virtua
 
 ## 3.3 Database Setup
 
-PostgreSQL is used as the database for this project. Below are the stops to setup and integrate the datbase with the Flask application.
+I used PostgreSQL as the database for this project. Below are the steps I took to set up and integrate the database with the Flask application.
 
 ### 3.3.1 Installing PostgreSQL
 
@@ -83,7 +92,7 @@ initdb /usr/local/var/postgres
 
 ### 3.3.2 Setting up the Database
 
-Create s new PostgreSQL database for the project
+I Create a new PostgreSQL database for the project
 ```bash
 createdb <your-database-name>
 ```
@@ -95,7 +104,7 @@ createuser -P -s -e <dbusername>
 
 ### 3.3.3 Configuring Flash to Use PosgreSQL
 
-To configure the Flask application to connect to the PostgreSQL database using SQLAlchemy, the connection string is defined in the config.py file.
+To configure the Flask application to connect to the PostgreSQL database using SQLAlchemy, I defined the connection string in the config.py file.
 
 For detailed code, please refer to the config.py file in the Git repository.
 
@@ -103,7 +112,7 @@ __Note__: We will look at removing the username and password from this later.
 
 ### 3.3.4 Setting up Flask-Migrate
 
-Flask-Migrate was used to handle the database migration.
+I used Flask-Migrate to handle the database migration.
 
 #### 3.3.4.1 Installing Dependencies
 
@@ -132,20 +141,20 @@ flask db upgrade
 
 ### 3.4.1 Restructuring for Cirtular Import Issue
 
-To avoid circular import issues, we separated the database (db) initialization into a new file called extensions.py.
+To avoid circular import issues, I separated the database (db) initialisation into a new file called `extensions.py`.
 
 ### 3.4.1.1 extensions.py
 
-The extensions.py file is used to manage extensions like SQLAlchemy:
+The `extensions.py` file is used to manage extensions like SQLAlchemy:
 ```python
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy # type: ignore
 
 db = SQLAlchemy()
 ```
 
 ### 3.4.1.2 models.py
 
-The models.py file defines the database models and imports db from extensions.py:
+The `models.py` file defines the database models and imports db from `extensions.py`:
 ```python
 from extensions import db
 
@@ -160,11 +169,11 @@ class User(db.Model):
 
 ### 3.4.1.3 app.py
 
-The app.py file imports db from extensions.py and initializes it within the application factory
+The `app.py` file imports db from `extensions.py` and initializes it within the application factory
 
 ## 3.5 Frontend Development
 
-The frontend of the My Demo App project is located in the src/frontend/ directory. It includes HTML templates, CSS for styling, and JavaScript for interactivity.
+The frontend of the My Demo App project is located in the `src/frontend/` directory. It includes HTML templates, CSS for styling, and JavaScript for interactivity.
 
 ### 3.5.1 Directory Structure
 
@@ -222,4 +231,4 @@ source venv/bin/activate
 flash run
 ```
 
-The application will be accessible at http://127.0.0.1:5000/.
+The application will be accessible at http://127.0.0.1:5001/.
