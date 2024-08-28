@@ -1,116 +1,156 @@
 # 4 Containerisation
-This section outlines the steps I took to containerise the My Demo App using Podman. Containerising the application ensures it is portable and can be easily deployed across different environments..
+This section outlines the steps I took to containerise the My Demo App using Podman and `podman-compose`. Containerising the application ensures it is portable and can be easily deployed across different environments.
 
 ## 4.1 Creating the Dockerfile
 
-The `Dockerfile` is located in the `src/` directory and is used to build a container image for the My Demo App. This file specifies the base image, copies the application code, installs dependencies, and defines the command to run the application.
+The project contains two separate `Dockerfiles—one` for the backend and one for the frontend. These files are located in their respective directories under `src/` and are used to build container images for each service.
+
+### 4.1.1 Backend Dockerfile
+
+The backend Dockerfile is located in the `src/backend/` directory. This file specifies the base image, copies the backend application code, installs dependencies, and defines the command to run the application.
 
 __Key Points__:
 
-- **Base Image**: The Dockerfile uses python:3.11-slim as the base image for a lightweight and efficient container.
-- **Dependencies**: All necessary Python dependencies are installed within the container using the requirements.txt file.
-- **Working Directory**: The application files are organised within the /app directory in the container.
-- **Port Configuration**: The application listens on port 5000 within the container, though this can be mapped to different host ports as needed.
+- **Base Image**: The Dockerfile uses `python:3.11-slim` as the base image for a lightweight and efficient container.
+- **Dependencies**: All necessary Python dependencies are installed within the container using the `requirements.txt` file.
+- **Working Directory**: The application files are organised within the `/app/backend` directory in the container.
+- **Port Configuration**: The backend application listens on port `5000` within the container.
+- **Database Migrations**: The Dockerfile includes a command to automatically run database migrations when the container starts.
 
-For detailed instructions on building and running the container, see the following sections.
+__Backend Dockerfile Contents__:
+```dockerfile
+# Use an official Python runtime as a parent image
+FROM python:3.11-slim
 
-## 4.2 Building the Container Image
+# Set the working directory in the container
+WORKDIR /app
 
-After the Dockerfile is ready, I used Podman to build the container image.
+# Copy the backend files into the container
+COPY backend/ /app/backend/
 
-__Steps__:
+# Set the working directory for the backend
+WORKDIR /app/backend
 
-1.	**Build the Image**:
-  - Run the following command to build the container image:
-```bash
-podman build -t my-demo-app .
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
+
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Define the command to run the application with migrations
+CMD flask db upgrade && flask run --host=0.0.0.0
 ```
 
-This command creates an image named `my-demo-app` using the current directory as the build context.
+### 4.1.2 Frontend Dockerfile
 
-2. **Verify the Image**:
-   - Verify that the image was successfully created by listing your Podman images:
-```bash
-podman images
+The frontend Dockerfile is located in the `src/frontend/` directory. This file specifies the base image, copies the frontend application code, installs dependencies, and defines the command to start the frontend application.
+
+#### Key Points:
+
+- **Base Image**: The Dockerfile uses `node:18-alpine` as the base image for a lightweight and efficient container.
+- **Dependencies**: All necessary Node.js dependencies are installed within the container using `npm install`.
+- **Working Directory**: The application files are organised within the `/app/frontend` directory in the container.
+- **Port Configuration**: The frontend application listens on port `3000` within the container.
+
+__Frontend Dockerfile Contents__:
+```dockerfile
+# Use an official Node.js runtime as a parent image
+FROM node:18-alpine
+
+# Set the working directory in the container
+WORKDIR /app/frontend
+
+# Copy the frontend files into the container
+COPY frontend/ .
+
+# Install dependencies
+RUN npm install
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Define the command to run the frontend application
+CMD ["npm", "start"]
 ```
 
-You should see `my-demo-app` listed among the images
+## 4.2 Setting Up podman-compose
 
-## 4.3 Running the Container
-Once the image is built, you can run the container.
+To streamline the process of running multiple containers (such as the backend and database), I used `podman-compose`, which allows defining and running multi-container applications.
 
-__Steps__:
+__Steps:__
 
-1. **Create a Podman Network** (If needed):
-
-If the container needs to communicate with a PostgreSQL container or other services, create a network:
+1. **Install podman-compose**:
+If you haven’t installed `podman-compose`, you can do so using pip:
 ```bash
-podman network create mydemoapp_net
+pip install podman-compose
 ```
 
-2. **Run the Database Container**:
-I started the PostgreSQL database container (assuming it’s named mydemoapp_db):
-```bash
-podman run -d --name mydemoapp_db --network mydemoapp_net -e POSTGRES_USER=mydemoappuser -e POSTGRES_PASSWORD=passwordpassword -e POSTGRES_DB=mydemoapp_db postgres:14
+2.	**Create a docker-compose.yml File**:
+The docker-compose.yml file defines the services (backend, database, frontend) and their configurations. This file is located in the `src/` directory.
+
+__Key Points__:
+
+- The file specifies the build contexts for the backend and frontend services.
+- The `depends_on` directive ensures that the backend service waits for the database to be ready.
+- The database service uses environment variables to set up the PostgreSQL user, password, and database.
+- 
+3.	**Using podman-compose to Build and Run the Containers**:
+With the docker-compose.yml file in place, the following command is used to build and start all services:
+```
+podman-compose up --build
 ```
 
-3. **Run the Container**:
-Use the following command to run the container:
-```bash
-podman run --name mydemoapp --network mydemoapp_net -e DATABASE_URL=postgresql://mydemoappuser:passwordpassword@mydb:5432/mydemoapp_db -p 5001:5000 my-demo-app
-```
-
-This runs the container in detached mode (-d), with port `5001` on the host mapped to port `5000` in the container:
-- **Note**: Port 5000 was already in use, so port 5001 was used instead.
-
-4. **Verify the Container is Running**:
-Check that the container is running:
+4. **Verify the Setup**:
+After running the `podman-compose` command, you can check that the containers are running with:
 ```bash
 podman ps
 ```
+You should see the services (mydemoapp_backend, mydemoapp_db, and mydemoapp_frontend) listed and running.
 
-You should see `my-demo-app` listed as running.
+## 4.3 Applying Database Migration Automatically
 
-5. **Access the Application**:
-Open your web browser and navigate to `http://localhost:5001/` to see the application running in the container.
+To automate the application of database migrations:
 
-## 4.4 Applying Database Migrations inside the Container
-
-After running the container, I needed to apply database migrations to ensure the database schema was up to date.
-
-__Steps__:
-
-1. **Access the Running Container**:
-Access the running container to run the migrations:
+1. **Automated Migrations**:
+The Dockerfile for the backend service includes a command that runs database migrations automatically when the container starts:
 ```bash
-podman exec -it mydemoapp bash
+CMD flask db upgrade && flask run --host=0.0.0.0
 ```
 
-2. **Run the Migrations**:
-Once inside the container, run the `Flask-Migration` commands:
+This ensures that the database schema is always up to date when the application starts.
+
+2.	**Manual Migrations (if needed)**:
+If you ever need to run migrations manually, you can access the backend container:
+```bash
+podman exec -it mydemoapp_backend bash
+```
+
+Then, run the migration command:
 ```bash
 flask db upgrade
-```
-3. **Exit the Container**:
-After running the migration, exit the container:
-```bash
-exit
 ```
 
 ## 4.5 Stopping and Removing the Container (Optional)
 
 If you need to stop or remove the container, follow these steps:
 
-1.	**Stop the Container**:
-To stop the running container, use the following command:
-```bash
-podman stop <container_id>
-```
+1. **Stop the Container**:
+   To stop the running container, use the following command:
+   ```bash
+   podman stop <container_id>
+   ```
 
 Replace <container_id> with the actual container ID.
 
-2. **Remove the Container**:
-To remove the stopped container.
-```bash
-podman rm <container_id>
-```
+2.	**Remove the Container**:
+To remove the stopped container, use the following command:
+   To stop the running container, use the following command:
+   ```bash
+   podman rm <container_id>
+   ```
+
+Replace <container_id> with the actual container ID.
