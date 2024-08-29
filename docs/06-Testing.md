@@ -10,6 +10,7 @@ Before running the tests, ensure you have the following installed and set up:
 - Flask and related dependencies (from `requirements.txt`)
 - PostgreSQL running and configured
 - Cypress installed for frontend testing (`npm install cypress --save-dev`)
+- Environment Variables: Ensure that environment variables such as `APP_ENV` and `APP_VERSION` are set correctly before running tests.
 
 ## 6.2 Backend Testing with Pytest
 
@@ -30,6 +31,13 @@ To run the backend tests against the native (non-containerized) version of the a
     ```bash
     cd src/backend
     ```
+
+3. **Set Environment Variables**:
+Ensure that `APP_ENV` and `APP_VERSION` are set before running the tests:
+```bash
+export APP_ENV=<Correct Environment, e.g. development>
+export APP_VERSION=<Correct Version, e.g. 0.2.0-dev>
+```
 
 3. **Run Pytest**:
    Execute the backend tests:
@@ -74,12 +82,12 @@ To run the Cypress tests against the native (non-containerized) version of the a
 2. **Run Cypress Test**:
     Execute the Cypress tests using the following command:
     ```bash
-    npx cypress run
+    npx cypress run --env APP_ENV=development,APP_VERSION=0.2.0-dev
     ```
 
-Ensure that the containerized app is accessible at http://localhost:5001. Cypress will run the tests located in the `src/frontend/cypress/e2e/` directory against this instance of the application. The key test files are:
-   - login_spec.cy.js
-   - register_spec.cy.js
+Ensure that the containerized app is accessible at `http://localhost:5001`. Cypress will run the tests located in the `src/frontend/cypress/e2e/` directory against this instance of the application. The key test files are:
+   - `login_spec.cy.js`
+   - `register_spec.cy.js`
 
 ## 6.4 Managing Test Results
 
@@ -93,6 +101,7 @@ After running the tests, you can view the results directly in the terminal. Cypr
   - **Database connection errors**: Ensure that the database is correctly configured and accessible from the application.
   - **Port conflicts**: Verify that the application is running on the correct port and that no other services are using the same port.
   - **Environment variable issues**: Double-check that all necessary environment variables are set, especially `DATABASE_URL`.
+  - **Environment variable issues**: Double-check that all necessary environment variables are set, especially `DATABASE_URL`, `APP_ENV`, and `APP_VERSION`.
 
 - **Accessing Logs**:
   - For Pytest errors, review the traceback provided in the terminal.

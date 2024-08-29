@@ -10,6 +10,7 @@ Before setting up the development environment, ensure that the following prerequ
 - **Python 3.11**: Python 3.11 should be installed on your machine.
 - **PostgreSQL**: Ensure PostgreSQL is installed and running.
 - **Git**: Git should be installed and configured on your system.
+- **Environment Variables**: Sensitive data such as database credentials should be managed using environment variables.
 
 ## 2.2 Install Python 3.11
 
@@ -84,13 +85,85 @@ I’m using Podman to containerise the application.
   podman --version
   ```
 
-## 2.5 Configure Cypress
+## 2.5 Basic Introduction to Enviornment Variables
+
+Environment variables are key-value pairs used by applications to configure settings and manage operational behavior without hard-coding these values directly into the code. They provide flexibility and security, especially when dealing with sensitive information like database credentials, API keys, and environment-specific settings (e.g., development, staging, production).
+
+### 2.5.2 Why Use Environment Variables?
+
+- **Separation of Configuration and Code**: Environment variables allow you to change configuration settings without modifying the code. This is especially useful when deploying the same codebase across different environments (development, staging, production).
+- **Security**: Sensitive information like passwords and API keys can be managed outside the codebase, reducing the risk of exposing them in version control.
+- **Portability**: Environment variables make your application more portable, as it can adapt to different environments by simply changing the variable values.
+
+### 2.5.3 Setting Up Environment Variables
+
+You can set up environment variables in several ways:
+
+1.	**Directly in the Shell**:
+You can set environment variables directly in your shell session. This is useful for temporary setups or quick tests.
+```bash
+export APP_ENV=development
+export DATABASE_URL=postgresql://username:password@localhost/dbname
+```
+
+These variables will remain available for the current session.
+
+2.	**Using a .env File**:
+A `.env` file is a simple text file where you can store environment variables. This file should be located in the root directory of your project (or the relevant subdirectory). The `.env` file allows you to manage your environment variables in a central location.
+Example .env file:
+```plaintext
+# .env file
+APP_ENV=development
+DATABASE_URL=postgresql://username:password@localhost/dbname
+```
+
+__Important__: The `.env` file should be added to your `.gitignore` file to prevent sensitive information from being exposed in your version control system.
+
+```plaintext
+# .gitignore
+.env
+```
+
+3.	**Accessing Environment Variables in Code**:
+Environment variables can be accessed in your Python code using the os module.
+Example in `app.py`:
+```python
+import os
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+```
+
+This allows your application to dynamically adapt based on the environment it’s running in, simply by changing the environment variable values.
+
+### 2.5.4 Example Environment Variables
+
+Here are some common environment variables you might use in your project:
+
+- **APP_ENV**: Defines the environment the application is running in (e.g., development, staging, production).
+- **DATABASE_URL**: Connection string for your PostgreSQL database.
+- **SECRET_KEY**: A secret key used by Flask for session management and other cryptographic operations.
+
+Example .env file:
+```plaintext
+APP_ENV=development
+DATABASE_URL=postgresql://mydemoappuser:password@localhost/mydemoapp_db
+SECRET_KEY=your_secret_key_here
+```
+
+### 2.5.5 Security Considerations
+
+While environment variables offer a more secure way to manage sensitive information, they are not foolproof:
+
+- **Protect the `.env` File**: Always add the `.env` file to your `.gitignore` to ensure it doesn’t get committed to your version control.
+- **Use Encryption**: Consider encrypting sensitive values in your environment variables or using secret management tools for production environments.
+
+## 2.6 Configure Cypress
 
 I am using Cypress to perform end-to-end testing of the application. The [06 Testing](06-testing.md) section provides more details on how this has been used.
 
 However, I've provided some details on the installation and configuration of Cypress here:
 
-### 2.5.1 Installation
+### 2.6.1 Installation
 
   - Navigate to the `src/frontend/` directory:
     ```bash
@@ -102,7 +175,7 @@ However, I've provided some details on the installation and configuration of Cyp
     npm install cypress --save-dev
     ```
 
-### 2.5.2 Configuration
+### 2.6.2 Configuration
 
   - Create a Cypress configuration file named `cypress.config.js` in the `src/frontend/` directory. Below is an example configuration:
     ```javascript
@@ -121,7 +194,7 @@ However, I've provided some details on the installation and configuration of Cyp
     });
     ```
 
-### 2.5.3 Running Cypress
+### 2.6.3 Running Cypress
 
   - To run Cypress tests, use the following command in the `src/frontend/` directory:
     ```bash
@@ -129,7 +202,7 @@ However, I've provided some details on the installation and configuration of Cyp
     ```
   - This will open the Cypress Test Runner where you can execute your tests.
 
-## 2.6 .gitignore Contents
+## 2.7 .gitignore Contents
 
 ```plaintext
 # Byte-compiled / optimized / DLL files

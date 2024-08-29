@@ -2,6 +2,20 @@
 
 This document describes the steps I took to develop the My Demo App project.
 
+## 3.1 Prerequisites
+
+### 3.1.1 Python Environment
+
+- **Python 3.11** was installed on my development machine.
+- A Python virtual environment was set up in the `src/backend/` directory to manage project dependencies.
+- All necessary Python packages were installed via `pip` using the `requirements.txt` file.
+
+### PostgreSQL Setup
+
+- PostgreSQL was installed and running.
+- The database was created and properly configured.
+- The database connection string was correctly set in the `config.py` file.
+
 ## 3.1 Project Structure
 
 The project is organized into the following structure:
@@ -232,3 +246,50 @@ flash run
 ```
 
 The application will be accessible at http://127.0.0.1:5001/.
+
+### 3.7 Environment Variables
+
+#### 3.7.1 Overview of Environment Variables
+
+In this project, environment variables are used to manage configuration settings and sensitive information, such as database credentials and application environment (development, production). This approach keeps sensitive data out of the codebase, making it easier to manage different environments.
+
+#### 3.7.2 Using Environment Variables in the Backend
+
+The backend of My Demo App is configured to use environment variables for key settings like the database connection string and the application environment (e.g., development, production). These variables are set either directly in the shell or via a `.env` file.
+
+- **APP_ENV**: Specifies the environment the application is running in (`development`, `staging`, `production`).
+- **DATABASE_URL**: Connection string for the PostgreSQL database.
+- **APP_VERSION**: Indicates the current version of the application (e.g., `0.1.0-dev`).
+
+In the `app.py` file, these variables are accessed using Python's `os` module:
+
+```python
+import os
+```
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+This setup allows the application to adapt based on the environment it’s running in.
+
+### 3.7.3 Managing Sensitive Information
+
+For security purposes, sensitive information such as database passwords is base64-encoded and stored as environment variables. The password is decoded within the application before use:
+
+```python
+import base64
+
+db_password = base64.b64decode(os.getenv('DB_PASSWORD')).decode('utf-8')
+```
+This approach ensures that sensitive information is not exposed in plain text within the codebase.
+
+## 3.8 Versioning the Application
+
+To maintain clear version control, the application uses environment variables to define its current version. This version number is set in the `.env` file and is referenced throughout the codebase and containerization process.
+
+- **APP_VERSION**: This variable is set to a value like `0.1.0-dev` during development and will be updated as the application progresses through different stages of deployment.
+
+Example in Dockerfiles:
+```dockerfile
+ARG VERSION=0.1.0-dev
+ENV APP_VERSION=$VERSION
+```
+This ensures that the versioning is consistent across the entire application, from the code to the containers.

@@ -19,8 +19,14 @@ __Key Points__:
 
 __Backend Dockerfile Contents__:
 ```dockerfile
+# Dockerfile for Backend
+
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
+
+# Build argument for version and environment
+ARG VERSION
+ARG ENVIRONMENT
 
 # Set the working directory in the container
 WORKDIR /app
@@ -36,7 +42,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variables
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=development
+ENV FLASK_ENV=$ENVIRONMENT
+ENV APP_VERSION=$VERSION
 
 # Expose the port the app runs on
 EXPOSE 5000
@@ -58,14 +65,22 @@ The frontend Dockerfile is located in the `src/frontend/` directory. This file s
 
 __Frontend Dockerfile Contents__:
 ```dockerfile
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
+# Dockerfile for Frontend
+
+# Use an official Node.js image
+FROM node:18
+
+# Build argument for version
+ARG VERSION
 
 # Set the working directory in the container
-WORKDIR /app/frontend
+WORKDIR /app
 
 # Copy the frontend files into the container
-COPY frontend/ .
+COPY . /app
+
+# Set environment variables
+ENV APP_VERSION=$VERSION
 
 # Install dependencies
 RUN npm install
@@ -73,7 +88,7 @@ RUN npm install
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Define the command to run the frontend application
+# Define the command to run the application
 CMD ["npm", "start"]
 ```
 
@@ -90,7 +105,7 @@ pip install podman-compose
 ```
 
 2.	**Create a docker-compose.yml File**:
-The docker-compose.yml file defines the services (backend, database, frontend) and their configurations. This file is located in the `src/` directory.
+The `docker-compose.yml` file defines the services (backend, database, frontend) and their configurations. This file is located in the `src/` directory.
 
 __Key Points__:
 

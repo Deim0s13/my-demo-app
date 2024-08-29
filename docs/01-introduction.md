@@ -1,7 +1,7 @@
 # 1. Introduction
 ## 1.2 Overview
 
-My Demo App is a web application designed to demonstrate the full lifecycle of developing, deploying, and managing a Python-based web application using the Flask framework and PostgreSQL database. My Demo App showcases best practices in software development, including environment setup, database management, frontend-backend integration, containerisation using Podman, and deployment readiness.
+My Demo App is a web application designed to demonstrate the full lifecycle of developing, deploying, and managing a Python-based web application using the Flask framework and PostgreSQL database. The project now includes a robust versioning strategy and environment management using environment variables, ensuring that the application is adaptable to different deployment stages (development, non-production, and production). My Demo App showcases best practices in software development, including environment setup, database management, frontend-backend integration, containerisation using Podman, and deployment readiness.
 
 ## 1.3 Features
 
@@ -10,6 +10,7 @@ My Demo App is a web application designed to demonstrate the full lifecycle of d
 - **Frontend-Backend Integration**: The application includes a simple, yet functional, frontend built with HTML, CSS, and JavaScript. The frontend interacts with the backend through RESTful API endpoints, demonstrating the flow of data between the user interface and the server.
 - **Modular Architecture**: The project is structured to separate concerns effectively. The backend, frontend, and database layers are clearly defined, making the application easy to manage, extend, and deploy.
 - **Deployment Readiness**: I’ve designed the project with deployment in mind, including containerisation using Podman. There are clear instructions on setting up the environment, managing dependencies, and running the application locally, in a containerised environment, and in production
+- **Versioning and Environment Management**: The application includes a clear versioning strategy, managed through environment variables (`APP_VERSION`, `APP_ENV`), to differentiate between development, non-production, and production environments. This ensures the application behaves appropriately across different stages of deployment and reduces the risk of accidental deployment of development code to production.
 
 ## 1.4 Purpose
 
