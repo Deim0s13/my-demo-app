@@ -2,14 +2,24 @@ from flask import Flask, render_template, request, redirect, url_for
 from extensions import db
 from models import User
 from config import Config
-from flask_migrate import Migrate  # Add this import
+from flask_migrate import Migrate
+import os
+import sys
 
 def create_app():
     app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
     app.config.from_object(Config)
 
     db.init_app(app)
-    migrate = Migrate(app, db)  # Initialize Flask-Migrate with your app and db
+    migrate = Migrate(app, db)
+
+    # Environment check
+    if Config.ENVIRONMENT == 'development':
+        print(f"Warning: You are running a development version of the application (Version: {Config.VERSION}).")
+        if os.getenv('ALLOW_DEPLOY_TO_NON_PROD') != 'true':
+            sys.exit("Error: Deployment of development version to non-prod/prod is not allowed.")
+    elif Config.ENVIRONMENT == 'production':
+        print(f"Running in production mode (Version: {Config.VERSION}).")
 
     @app.route('/')
     def index():

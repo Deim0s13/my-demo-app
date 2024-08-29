@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: "postgresql://mydemoappuser:password@db:5432/mydemoapp_db"
+      APP_ENV: "development"  # Specify the environment
+      APP_VERSION: "0.1.0-dev"  # Specify the version
     depends_on:
       - db
     ports:
@@ -35,6 +37,8 @@ services:
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
+    environment:
+      APP_VERSION: "0.1.0-dev"  # Specify the version
     ports:
       - "3000:3000"
 
