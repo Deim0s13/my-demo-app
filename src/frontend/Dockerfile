@@ -1,11 +1,17 @@
 # Use an official Node.js image
 FROM node:18
 
+# Build argument for version
+ARG VERSION=0.1.0-dev
+
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the frontend files into the container
 COPY . /app
+
+# Set environment variables
+ENV APP_VERSION=$VERSION
 
 # Install dependencies
 RUN npm install

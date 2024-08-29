@@ -1,6 +1,10 @@
-# Dockerfile
+# Dockerfile for Backend
+
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
+
+# Build argument for version
+ARG VERSION=0.1.0-dev
 
 # Set the working directory in the container
 WORKDIR /app
@@ -20,6 +24,7 @@ COPY frontend/ /app/frontend/
 # Set environment variables
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
+ENV APP_VERSION=&VERSIOM
 
 # Expose the port the app runs on
 EXPOSE 5000
