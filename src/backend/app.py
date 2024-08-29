@@ -5,15 +5,22 @@ from config import Config
 from flask_migrate import Migrate
 import os
 import sys
+import base64
 
 def create_app():
     app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
     app.config.from_object(Config)
 
+    # Decode the DB password from the environment variable (if encoded)
+    db_password = base64.b64decode(os.getenv('DB_PASSWORD')).decode('utf-8')
+
+    # Update SQLAlchemy database URI with decoded password and environment variables
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER')}:{db_password}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    # Environment check
+    # Environment and version check
     if Config.ENVIRONMENT == 'development':
         print(f"Warning: You are running a development version of the application (Version: {Config.VERSION}).")
         if os.getenv('ALLOW_DEPLOY_TO_NON_PROD') != 'true':

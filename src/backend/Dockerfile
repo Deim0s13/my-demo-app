@@ -3,8 +3,9 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Build argument for version
-ARG VERSION=0.1.0-dev
+# Build argument for version and environment
+ARG VERSION
+ARG ENVIRONMENT
 
 # Set the working directory in the container
 WORKDIR /app
@@ -20,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variables
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=development
+ENV FLASK_ENV=$ENVIRONMENT
 ENV APP_VERSION=$VERSION
 
 # Expose the port the app runs on
