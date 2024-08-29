@@ -18,13 +18,10 @@ WORKDIR /app/backend
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the frontend files into the container
-COPY frontend/ /app/frontend/
-
 # Set environment variables
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
-ENV APP_VERSION=&VERSIOM
+ENV APP_VERSION=$VERSION
 
 # Expose the port the app runs on
 EXPOSE 5000

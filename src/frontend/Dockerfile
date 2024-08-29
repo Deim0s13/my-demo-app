@@ -1,5 +1,7 @@
+# Dockerfile for Frontend
+
 # Use an official Node.js image
-FROM node:18
+FROM node:18-alpine
 
 # Build argument for version
 ARG VERSION=0.1.0-dev
