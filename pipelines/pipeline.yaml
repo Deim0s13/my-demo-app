@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: my-demo-app-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+  params:
+    - name: git-url
+      description: The git repository URL
+      type: string
+    - name: git-revision
+      description: The git revision (branch, tag, etc.)
+      type: string
+      default: "main"
+    - name: image-url
+      description: The URL of the image to build and push
+      type: string
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+    - name: build-app
+      taskRef:
+        name: build-app
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: image-url
+          value: $(params.image-url)
+    - name: run-tests
+      taskRef:
+        name: run-tests
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: deploy-app
+      taskRef:
+        name: deploy-app
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: image-url
+          value: $(params.image-url)

@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: my-demo-app-pipeline-run
+spec:
+  serviceAccountName: pipeline
+  pipelineRef:
+    name: my-demo-app-pipeline  # Reference to your Pipeline
+  params:
+  - name: git-url
+    value: "https://github.com/Deim0s13/my-demo-app.git"
+  - name: git-revision
+    value: "main"
+  - name: image-url
+    value: "quay.io/rh-ee-pleathen/my-demo-app"
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        name: workspace-pvc
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  podTemplate:
+    volumes:
+    - name: quay-secret
+      secret:
+        secretName: quay-secret
+    imagePullSecrets:
+    - name: quay-secret

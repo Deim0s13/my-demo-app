@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-app
+spec:
+  workspaces:
+    - name: source
+  params:
+    - name: image-url
+      description: The URL of the image to deploy
+      type: string
+  steps:
+    - name: deploy
+      image: 'bitnami/kubectl:latest'
+      script: |
+        cd $(workspaces.source.path)
+        kubectl set image deployment/my-demo-app my-demo-app=$(params.image-url)
+        kubectl rollout status deployment/my-demo-app
+        
