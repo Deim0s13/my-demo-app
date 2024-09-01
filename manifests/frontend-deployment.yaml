@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-demo-app-frontend
+  labels:
+    app: my-demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-demo-app-frontend
+  template:
+    metadata:
+      labels:
+        app: my-demo-app-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: quay.io/rh-ee-pleathen/my-demo-app-frontend:v0.2.0-dev
+        ports:
+        - containerPort: 3000
+        env:
+        - name: APP_VERSION
+          value: "0.2.0-dev"
