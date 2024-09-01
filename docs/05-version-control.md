@@ -1,4 +1,4 @@
-# 5. Version Control and CI/CD
+# 5. Version Control
 In this section, I’ll outline the version control practices I’m using for the My Demo App project and provide an introduction to Continuous Integration (CI) using Tekton. This will also lay the groundwork for future Continuous Deployment (CD) processes, which I plan to implement as I progress to an OpenShift environment.
 
 ## 5.1 Version Control with Git
