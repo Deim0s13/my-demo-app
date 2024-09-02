@@ -1,10 +1,10 @@
 # Dockerfile for Frontend
 
 # Use an official Node.js image
-FROM node:18-alpine
+FROM node:18
 
 # Build argument for version
-ARG VERSION=0.1.0-dev
+ARG VERSION
 
 # Set the working directory in the container
 WORKDIR /app
