@@ -106,7 +106,7 @@ Since I’m currently working on a local environment (like a spare laptop runnin
    - **Install Tekton Pipelines**: I need to ensure that Tekton Pipelines are installed on my local OpenShift or Kubernetes cluster.
    - **Create Basic Tekton Tasks**: I’ll start with simple tasks, such as checking out the code from GitHub and running basic tests.
 
-### 5.2.3 Expanding CI with Tekton on OpenShift
+### 5.2.3 Expanding CI with OpenShift Pipelines
 
 Once I transition to a more robust environment like ROSA, I plan to expand my Tekton pipelines to include more complex tasks, such as:
 
@@ -150,6 +150,40 @@ podman push quay.io/your-quay-username/my-demo-app-frontend:v0.2.0-dev
 ```
 
 These steps ensure that your backend and frontend images are available in Quay.io for use my OpenShift pipelines and deployments. After pushing the images, I can now reference these in my OpenShift pipelines for building, testing, and deploying My Demo App.
+
+## 5.4 Configuring Secrets for Image Pulls
+
+To ensure the application can pull images from a private registry, such as Quay.io, it's essential to create and link the appropriate secrets.
+
+### 5.4.1 Creating the Secret for Quay.io
+
+1. **Generate a Quay.io Access Token:**
+   - Navigate to your [Quay.io account settings](https://quay.io/user/) and generate a new access token.
+   
+2. **Create the Secret:**
+   - Use the following command to create a secret in your OpenShift project:
+     ```bash
+     oc create secret docker-registry quay-secret \
+       --docker-server=quay.io \
+       --docker-username=<quay-username> \
+       --docker-password=<quay-access-token> \
+       --docker-email=<your-email> \
+       -n my-demo-app
+     ```
+
+3. **Link the Secret to the Service Account:**
+   - Link the secret to the `default` service account to allow image pulls:
+     ```bash
+     oc secrets link default quay-secret --for=pull -n my-demo-app
+     ```
+
+### 5.4.2 Verifying Secret Configuration
+
+After creating and linking the secret, verify that it's correctly associated with your service account:
+
+```bash
+oc get serviceaccount default -o yaml -n my-demo-app
+```
 
 ## 5.3 Future Considerations for Continuous Deployment
 

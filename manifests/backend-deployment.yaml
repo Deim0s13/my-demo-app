@@ -19,6 +19,8 @@ spec:
         image: quay.io/rh-ee-pleathen/my-demo-app-backend:v0.2.0-dev
         ports:
         - containerPort: 5000
+      imagePullSecrets:
+      - name: quay-secret
         env:
         - name: APP_ENV
           value: "production"

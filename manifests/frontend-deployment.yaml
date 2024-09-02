@@ -19,6 +19,8 @@ spec:
         image: quay.io/rh-ee-pleathen/my-demo-app-frontend:v0.2.0-dev
         ports:
         - containerPort: 3000
+      imagePullSecrets:
+      - name: quay-secret
         env:
         - name: APP_VERSION
           value: "0.2.0-dev"
