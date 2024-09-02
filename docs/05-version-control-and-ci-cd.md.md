@@ -113,6 +113,44 @@ Once I transition to a more robust environment like ROSA, I plan to expand my Te
    - **Building Docker Images**: Automating the build process for my Docker images.
    - **Running Tests**: Integrating my testing framework into the pipeline to ensure code quality.
 
+### 5.2.4 Building and Pushing Images to Quay.io
+
+Before running your Tekton pipelines, it’s essential to have the application images available in a container registry like Quay.io. This subsection outlines the steps to build and push the images to Quay.io.
+
+__Steps to Build and Push Images__
+
+1.	**Login to Quay.io**:
+Use the podman login command to authenticate with your Quay.io account.
+```bash
+podman login quay.io
+```
+
+2. **Build the Backend Image**:
+Navigate to the src/backend/ directory and build the backend image with the appropriate version tag.
+```bash
+podman build -t quay.io/your-quay-username/my-demo-app-backend:v0.2.0-dev .
+```
+
+3. **Push the Backend Image**:
+Push the built image to Quay.io.
+```bash
+podman push quay.io/your-quay-username/my-demo-app-backend:v0.2.0-dev
+```
+
+4. **Build the Frontend Image**:
+Navigate to the src/frontend/ directory and build the frontend image.
+```bash
+podman build -t quay.io/your-quay-username/my-demo-app-frontend:v0.2.0-dev .
+```
+
+5. **Push the Frontend Image:
+Push the frontend image to Quay.io.
+```bash
+podman push quay.io/your-quay-username/my-demo-app-frontend:v0.2.0-dev
+```
+
+These steps ensure that your backend and frontend images are available in Quay.io for use my OpenShift pipelines and deployments. After pushing the images, I can now reference these in my OpenShift pipelines for building, testing, and deploying My Demo App.
+
 ## 5.3 Future Considerations for Continuous Deployment
 
 ### 5.3.1 Planning for Deployment

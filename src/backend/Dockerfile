@@ -11,7 +11,7 @@ ARG ENVIRONMENT
 WORKDIR /app
 
 # Copy the backend files into the container
-COPY backend/ /app/backend/
+COPY . /app/backend/
 
 # Set the working directory for the backend
 WORKDIR /app/backend
