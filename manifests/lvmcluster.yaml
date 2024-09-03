@@ -1,0 +1,13 @@
+apiVersion: lvm.topolvm.io/v1alpha1
+kind: LVMCluster
+metadata:
+  name: my-lvm-cluster
+  namespace: openshift-storage
+spec:
+  storage:
+    deviceClasses:
+      - name: lvm
+        default: true
+        volumeGroup: my-vg
+        devices:
+          - name: /dev/sda
