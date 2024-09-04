@@ -22,8 +22,8 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-secret
-              key: POSTGRES_PASSWORD
+              name: my-db-secret
+              key: MY_DEMO_APP_DB_PASSWORD
         - name: POSTGRES_DB
           value: mydemoapp_db
         ports:
@@ -31,6 +31,13 @@ spec:
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data  # This is where PostgreSQL expects its data
+      initContainers:
+      - name: init-permissions
+        image: busybox
+        command: ['sh', '-c', 'chown -R 1000720000:1000720000 /var/lib/postgresql/data']
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:

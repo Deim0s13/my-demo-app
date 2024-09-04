@@ -2,8 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-demo-app-backend
-  labels:
-    app: my-demo-app
+  namespace: my-demo-app
 spec:
   replicas: 1
   selector:
@@ -17,18 +16,33 @@ spec:
       containers:
       - name: backend
         image: quay.io/rh-ee-pleathen/my-demo-app-backend:v0.2.0-dev
-        ports:
-        - containerPort: 5000
-      imagePullSecrets:
-      - name: quay-secret
+        imagePullPolicy: Always
         env:
-        - name: APP_ENV
-          value: "production"
-        - name: APP_VERSION
-          value: "0.2.0-dev"
-        - name: DATABASE_URL
-          value: "postgresql://mydemoappuser:<password>@my-demo-app-db:5432/mydemoapp_db"
+        - name: DB_USER
+          value: mydemoappuser  # Matches .env file
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: my-demo-app-secrets
-              key: DATABASE_URL
+              name: my-db-secret  # Ensure this secret name matches the secret name in the cluster
+              key: POSTGRES_PASSWORD  # The value from your .env file should be base64 encoded
+        - name: DB_NAME
+          value: mydemoapp_db  # Matches .env file
+        - name: DB_HOST
+          value: db  # Matches .env file
+        - name: DB_PORT
+          value: "5432"  # Matches .env file
+        - name: APP_ENV
+          value: development  # Matches .env file
+        - name: APP_VERSION
+          value: "0.2.0-dev"  # Matches .env file
+        - name: ALLOW_DEPLOY_TO_NON_PROD
+          value: "true"  # Matches .env file
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: backend-storage
+          mountPath: /mnt/data/backend
+      volumes:
+      - name: backend-storage
+        persistentVolumeClaim:
+          claimName: backend-pvc
