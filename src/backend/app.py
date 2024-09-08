@@ -1,12 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for # type: ignore
 from extensions import db
 from models import User
 from config import Config
-from flask_migrate import Migrate
+from flask_migrate import Migrate # type: ignore
 import os
 import sys
 import base64
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 from pathlib import Path
 
 def create_app():
@@ -22,7 +22,7 @@ def create_app():
     # Decode the DB password from the environment variable (if encoded)
     db_password = os.getenv('DB_PASSWORD')
     if db_password:
-        db_password = base64.b64decode(db_password).decode('utf-8')
+        db_password = base64.b64decode(os.getenv('DB_PASSWORD')).decode('utf-8')
 
     # Update SQLAlchemy database URI with decoded password and environment variables
     app.config['SQLALCHEMY_DATABASE_URI'] = (

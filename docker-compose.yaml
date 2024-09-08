@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
@@ -17,10 +15,14 @@ services:
       context: ./src/backend
       dockerfile: Dockerfile
       args:
-        VERSION: ${APP_VERSION}  # Pass version to Dockerfile
-        ENVIRONMENT: ${APP_ENV}  # Pass environment to Dockerfile
+        VERSION: ${APP_VERSION}
+        ENVIRONMENT: ${APP_ENV}
     environment:
-      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: 5432
     depends_on:
       - db
     ports:
@@ -39,11 +41,12 @@ services:
       context: ./src/frontend
       dockerfile: Dockerfile
       args:
-        VERSION: ${APP_VERSION}  # Pass version to Dockerfile
+        VERSION: ${APP_VERSION}
     environment:
-      APP_VERSION: ${APP_VERSION}  # Specify the version
+      APP_VERSION: ${APP_VERSION}
     ports:
       - "3000:3000"
 
-volumes:
-  postgres_data:
+# Remove the persistent volume for ephemeral data in development
+# volumes:
+#   postgres_data:

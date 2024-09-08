@@ -27,5 +27,5 @@ ENV APP_VERSION=$VERSION
 # Expose the port the app runs on
 EXPOSE 5000
 
-# Define the command to run the application with migrations
-CMD flask db upgrade && flask run --host=0.0.0.0
+# Load the .env file and define the command to run the application with migrations
+CMD ["sh", "-c", "flask db upgrade && flask run --host=0.0.0.0"]
